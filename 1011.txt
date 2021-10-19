@@ -1,0 +1,57 @@
+def rControl():
+    global light1, light2, light3
+    if light1 == 0:
+        pins.digital_write_pin(DigitalPin.P1, 0)
+    if light2 == 0:
+        pins.digital_write_pin(DigitalPin.P2, 0)
+    if light3 == 0:
+        pins.digital_write_pin(DigitalPin.P3, 0)
+    if pins.digital_read_pin(DigitalPin.P4) == 1:
+        control.wait_micros(1000)
+        if pins.digital_read_pin(DigitalPin.P4) == 1:
+            light1 = 1
+            pins.digital_write_pin(DigitalPin.P1, 1)
+    if pins.digital_read_pin(DigitalPin.P5) == 1:
+        control.wait_micros(1000)
+        if pins.digital_read_pin(DigitalPin.P5) == 1:
+            light2 = 1
+            pins.digital_write_pin(DigitalPin.P2, 1)
+    if pins.digital_read_pin(DigitalPin.P6) == 1:
+        control.wait_micros(1000)
+        if pins.digital_read_pin(DigitalPin.P6) == 1:
+            light3 = 1
+            pins.digital_write_pin(DigitalPin.P3, 1)
+
+def on_button_pressed_a():
+    global light1, light2, light3
+    light1 = 1
+    light2 = 1
+    light3 = 1
+input.on_button_pressed(Button.A, on_button_pressed_a)
+
+def on_button_pressed_b():
+    global flag
+    flag = 0
+input.on_button_pressed(Button.B, on_button_pressed_b)
+
+flag = 0
+light3 = 0
+light2 = 0
+light1 = 0
+pins.digital_write_pin(DigitalPin.P10, 1)
+pins.digital_write_pin(DigitalPin.P0, 1)
+# 延时3s
+for index in range(60):
+    control.wait_micros(5000)
+pins.digital_write_pin(DigitalPin.P0, 0)
+
+def on_forever():
+    global light1, light2, light3
+    rControl()
+    if pins.digital_read_pin(DigitalPin.P9) == 1:
+        control.wait_micros(1000)
+        if pins.digital_read_pin(DigitalPin.P9) == 1:
+            light1 = 0
+            light2 = 0
+            light3 = 0
+basic.forever(on_forever)
